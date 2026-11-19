@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zoungrana Telecom Manager</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#111;color:#f5f5f5;font-family:Arial,sans-serif}
+header{background:#000;padding:22px;text-align:center;border-bottom:2px solid #c9a227}
+h1{color:#d8b343;font-size:23px;margin:0}
+header p{color:#bbb;font-size:13px}
+main{padding:18px;max-width:600px;margin:auto}
+.card{background:#202020;padding:18px;border:1px solid #55451d;border-radius:12px;margin:14px 0}
+h2{color:#d8b343;font-size:19px}
+input{width:100%;padding:13px;margin:8px 0;background:#333;color:white;border:1px solid #777;border-radius:7px}
+button{background:#c9a227;color:#111;border:0;padding:13px;border-radius:7px;font-weight:bold;width:100%;margin-top:8px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{background:#292929;border:1px solid #806923;padding:18px 8px;text-align:center;border-radius:10px;color:#e5c45c;font-weight:bold}
+.small{color:#aaa;font-size:12px}
+#dashboard{display:none}
+</style>
+</head>
+<body>
+<header>
+<h1>ZOUNGRANA TELECOM</h1>
+<p>MANAGER • Gestion de votre boutique</p>
+</header>
+
+<main>
+<section id="login" class="card">
+<h2>Connexion</h2>
+<p>Bienvenue dans votre espace de gestion.</p>
+<input id="email" type="email" placeholder="Votre adresse e-mail">
+<input id="password" type="password" placeholder="Votre mot de passe">
+<button onclick="login()">Se connecter</button>
+<p id="message" class="small"></p>
+</section>
+
+<section id="dashboard">
+<div class="card">
+<h2>Tableau de bord</h2>
+<p>Bienvenue dans votre boutique Zoungrana Telecom.</p>
+<p class="small">Espace de gestion en préparation.</p>
+</div>
+<div class="grid">
+<div class="tile">📦<br>Stock</div>
+<div class="tile">💰<br>Ventes</div>
+<div class="tile">🔧<br>Réparations</div>
+<div class="tile">👥<br>Clients</div>
+<div class="tile">💳<br>Paiements</div>
+<div class="tile">🧾<br>Dépenses</div>
+<div class="tile">📊<br>Rapports</div>
+<div class="tile">⚙️<br>Paramètres</div>
+</div>
+<button onclick="logout()">Se déconnecter</button>
+</section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "A_REMPLACER_PAR_URL_SUPABASE";
+const SUPABASE_KEY = "A_REMPLACER_PAR_CLE_PUBLIQUE_SUPABASE";
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+async function login(){
+ const email=document.getElementById("email").value;
+ const password=document.getElementById("password").value;
+ const msg=document.getElementById("message");
+ if(SUPABASE_URL.startsWith("A_REMPLACER")){
+   msg.textContent="La connexion à Supabase doit encore être configurée.";
+   return;
+ }
+ msg.textContent="Connexion en cours...";
+ const {error}=await db.auth.signInWithPassword({email,password});
+ if(error){msg.textContent="Erreur : "+error.message;return;}
+ showDashboard();
+}
+function showDashboard(){
+ document.getElementById("login").style.display="none";
+ document.getElementById("dashboard").style.display="block";
+}
+async function logout(){
+ await db.auth.signOut();
+ document.getElementById("dashboard").style.display="none";
+ document.getElementById("login").style.display="block";
+}
+async function checkSession(){
+ const {data}=await db.auth.getSession();
+ if(data.session)showDashboard();
+}
+if(!SUPABASE_URL.startsWith("A_REMPLACER"))checkSession();
+</script>
+</body>
+</html>
