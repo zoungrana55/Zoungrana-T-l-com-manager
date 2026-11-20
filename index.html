@@ -91,6 +91,21 @@ async function checkSession(){
  if(data.session)showDashboard();
 }
 if(!SUPABASE_URL.startsWith("A_REMPLACER"))checkSession();
-</script>
+</script>async function ouvrirStock(){
+  const {data,error}=await db.from("produits").select("*");
+  if(error){
+    alert("Erreur : "+error.message);
+    return;
+  }
+  if(!data.length){
+    alert("Le stock est vide. Aucun produit enregistré.");
+    return;
+  }
+  let texte="STOCK ZOUNGRANA TELECOM\n\n";
+  data.forEach(p=>{
+    texte+=p.nom+" | "+p.categorie+" | Quantité : "+p.quantite+" | Prix vente : "+p.prix_vente+" F\n";
+  });
+  alert(texte);
+}
 </body>
 </html>
