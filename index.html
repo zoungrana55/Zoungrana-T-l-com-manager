@@ -1,111 +1,115 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111827">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="description" content="Gestion de Zoungrana Telecom">
 <title>Zoungrana Telecom Manager</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#111;color:#f5f5f5;font-family:Arial,sans-serif}
-header{background:#000;padding:22px;text-align:center;border-bottom:2px solid #c9a227}
-h1{color:#d8b343;font-size:23px;margin:0}
-header p{color:#bbb;font-size:13px}
-main{padding:18px;max-width:600px;margin:auto}
-.card{background:#202020;padding:18px;border:1px solid #55451d;border-radius:12px;margin:14px 0}
-h2{color:#d8b343;font-size:19px}
-input{width:100%;padding:13px;margin:8px 0;background:#333;color:white;border:1px solid #777;border-radius:7px}
-button{background:#c9a227;color:#111;border:0;padding:13px;border-radius:7px;font-weight:bold;width:100%;margin-top:8px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.tile{background:#292929;border:1px solid #806923;padding:18px 8px;text-align:center;border-radius:10px;color:#e5c45c;font-weight:bold}
-.small{color:#aaa;font-size:12px}
-#dashboard{display:none}
+:root{--bg:#f3f4f6;--card:#fff;--ink:#111827;--muted:#6b7280;--gold:#d6a84f;--line:#e5e7eb}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px Arial,sans-serif}
+header{background:#111827;color:white;padding:20px 16px}header h1{font-size:21px;margin:0 0 5px}header p{margin:0;color:#d1d5db;font-size:13px}
+nav{display:flex;gap:7px;overflow:auto;padding:10px;background:#fff;position:sticky;top:0;z-index:2;border-bottom:1px solid var(--line)}
+nav button{white-space:nowrap;border:0;background:#eee;padding:10px 13px;border-radius:9px;font-weight:700}
+nav button.active{background:#111827;color:white}
+main{max-width:850px;margin:auto;padding:14px}.panel{display:none}.panel.active{display:block}
+.card{background:var(--card);padding:15px;border-radius:13px;margin-bottom:13px;box-shadow:0 1px 4px #0000000d}
+h2{font-size:18px;margin:0 0 13px}.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.stat{background:#f9fafb;border:1px solid var(--line);padding:13px;border-radius:10px}.stat small{display:block;color:var(--muted);margin-bottom:7px}.stat strong{font-size:19px}
+label{display:block;font-weight:700;font-size:13px;margin:10px 0 5px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #d1d5db;border-radius:9px;font-size:15px;background:white}
+button.primary{background:#111827;color:white;border:0;padding:12px 15px;border-radius:9px;font-weight:700;margin-top:12px;width:100%}
+button.danger{background:#fee2e2;color:#991b1b;border:0;padding:7px 10px;border-radius:7px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.item{border-top:1px solid var(--line);padding:11px 0;display:flex;justify-content:space-between;gap:10px;align-items:center}
+.item small{display:block;color:var(--muted);margin-top:4px}.empty{color:var(--muted);font-size:14px;padding:10px 0}
+.note{font-size:12px;color:var(--muted);line-height:1.5}
+@media(min-width:600px){.stats{grid-template-columns:repeat(4,1fr)}}
 </style>
 </head>
 <body>
-<header>
-<h1>ZOUNGRANA TELECOM</h1>
-<p>MANAGER • Gestion de votre boutique</p>
-</header>
-
+<header><h1>Zoungrana Telecom Manager</h1><p>Gestion simple de votre boutique</p></header>
+<nav id="tabs">
+<button class="active" data-tab="accueil">Accueil</button><button data-tab="stock">Stock</button><button data-tab="ventes">Ventes</button><button data-tab="reparations">Réparations</button><button data-tab="clients">Clients</button><button data-tab="depenses">Dépenses</button><button data-tab="rapports">Rapports</button>
+</nav>
 <main>
-<section id="login" class="card">
-<h2>Connexion</h2>
-<p>Bienvenue dans votre espace de gestion.</p>
-<input id="email" type="email" placeholder="Votre adresse e-mail">
-<input id="password" type="password" placeholder="Votre mot de passe">
-<button onclick="login()">Se connecter</button>
-<p id="message" class="small"></p>
+<section id="accueil" class="panel active">
+<div class="card"><h2>Tableau de bord</h2><div class="stats">
+<div class="stat"><small>Produits en stock</small><strong id="sProduits">0</strong></div>
+<div class="stat"><small>Valeur du stock</small><strong id="sValeur">0 F</strong></div>
+<div class="stat"><small>Ventes enregistrées</small><strong id="sVentes">0 F</strong></div>
+<div class="stat"><small>Dépenses enregistrées</small><strong id="sDepenses">0 F</strong></div>
+</div></div>
+<div class="card"><h2>Bienvenue</h2><p>Commencez par ajouter vos produits dans Stock. Ensuite, enregistrez chaque vente.</p><p class="note">Les informations sont enregistrées dans le navigateur de ce téléphone. Utilisez « Sauvegarder » dans Rapports pour garder une copie de sécurité.</p></div>
 </section>
-
-<section id="dashboard">
-<div class="card">
-<h2>Tableau de bord</h2>
-<p>Bienvenue dans votre boutique Zoungrana Telecom.</p>
-<p class="small">Espace de gestion en préparation.</p>
-</div>
-<div class="grid">
-<div class="tile" onclick="ouvrirStock()">📦<br>Stock</div>
-<div class="tile">💰<br>Ventes</div>
-<div class="tile">🔧<br>Réparations</div>
-<div class="tile">👥<br>Clients</div>
-<div class="tile">💳<br>Paiements</div>
-<div class="tile">🧾<br>Dépenses</div>
-<div class="tile">📊<br>Rapports</div>
-<div class="tile">⚙️<br>Paramètres</div>
-</div>
-<button onclick="logout()">Se déconnecter</button>
+<section id="stock" class="panel">
+<div class="card"><h2>Ajouter un produit</h2><form id="formStock">
+<label>Nom du produit</label><input name="nom" required placeholder="Ex. iPhone 11">
+<div class="row"><div><label>Catégorie</label><input name="categorie" placeholder="Téléphone, accessoire..."></div><div><label>Quantité</label><input name="quantite" type="number" min="0" required></div></div>
+<div class="row"><div><label>Prix d'achat (F CFA)</label><input name="achat" type="number" min="0" required></div><div><label>Prix de vente (F CFA)</label><input name="vente" type="number" min="0" required></div></div>
+<button class="primary">Enregistrer le produit</button></form></div>
+<div class="card"><h2>Liste du stock</h2><div id="listeStock" class="empty">Aucun produit enregistré.</div></div>
+</section>
+<section id="ventes" class="panel">
+<div class="card"><h2>Enregistrer une vente</h2><form id="formVente">
+<label>Produit</label><select name="produit" id="choixProduit" required></select>
+<div class="row"><div><label>Quantité vendue</label><input name="quantite" type="number" min="1" value="1" required></div><div><label>Nom du client (facultatif)</label><input name="client" placeholder="Nom du client"></div></div>
+<button class="primary">Valider la vente</button></form></div>
+<div class="card"><h2>Historique des ventes</h2><div id="listeVentes" class="empty">Aucune vente.</div></div>
+</section>
+<section id="reparations" class="panel">
+<div class="card"><h2>Nouvelle réparation</h2><form id="formRep">
+<label>Client</label><input name="client" required><div class="row"><div><label>Téléphone</label><input name="telephone" required placeholder="Ex. Tecno Spark"></div><div><label>Problème</label><input name="probleme" required placeholder="Ex. écran cassé"></div></div>
+<div class="row"><div><label>Prix convenu (F CFA)</label><input name="prix" type="number" min="0" required></div><div><label>État</label><select name="etat"><option>En attente</option><option>En cours</option><option>Terminée</option><option>Récupérée</option></select></div></div>
+<button class="primary">Enregistrer la réparation</button></form></div><div class="card"><h2>Suivi des réparations</h2><div id="listeRep" class="empty">Aucune réparation.</div></div>
+</section>
+<section id="clients" class="panel">
+<div class="card"><h2>Ajouter un client</h2><form id="formClient"><label>Nom du client</label><input name="nom" required><label>Numéro de téléphone</label><input name="tel"><label>Note (facultatif)</label><input name="note"><button class="primary">Enregistrer le client</button></form></div><div class="card"><h2>Liste des clients</h2><div id="listeClients" class="empty">Aucun client.</div></div>
+</section>
+<section id="depenses" class="panel">
+<div class="card"><h2>Ajouter une dépense</h2><form id="formDep"><label>Motif</label><input name="motif" required placeholder="Ex. transport, loyer..."><label>Montant (F CFA)</label><input name="montant" type="number" min="0" required><button class="primary">Enregistrer la dépense</button></form></div><div class="card"><h2>Historique des dépenses</h2><div id="listeDep" class="empty">Aucune dépense.</div></div>
+</section>
+<section id="rapports" class="panel">
+<div class="card"><h2>Résumé</h2><div id="resume"></div><button class="primary" id="exporter">Sauvegarder mes données</button><label>Restaurer une sauvegarde</label><input type="file" id="importer" accept="application/json"><p class="note">Téléchargez régulièrement une sauvegarde et gardez-la dans votre téléphone. Pour restaurer, choisissez le fichier JSON sauvegardé.</p></div>
+<div class="card"><button class="danger" id="effacerTout">Effacer toutes les données</button><p class="note">Attention : cette action est définitive. Faites une sauvegarde avant.</p></div>
 </section>
 </main>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL = "https://vmonbmxspypqtkqirtiv.supabase.co";
-const SUPABASE_KEY = "sb_publishable_f5GZS8ux5EdL93HIEEnJIw_DT3qjF8y";
-const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-async function login(){
- const email=document.getElementById("email").value;
- const password=document.getElementById("password").value;
- const msg=document.getElementById("message");
- if(SUPABASE_URL.startsWith("A_REMPLACER")){
-   msg.textContent="La connexion à Supabase doit encore être configurée.";
-   return;
- }
- msg.textContent="Connexion en cours...";
- const {error}=await db.auth.signInWithPassword({email,password});
- if(error){msg.textContent="Erreur : "+error.message;return;}
- showDashboard();
+const cle='zoungrana_manager_v1';
+let db=JSON.parse(localStorage.getItem(cle)||'{"stock":[],"ventes":[],"reparations":[],"clients":[],"depenses":[]}');
+const save=()=>{localStorage.setItem(cle,JSON.stringify(db));render()};
+const f=n=>Number(n||0).toLocaleString('fr-FR')+' F';
+const safe=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button,.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById(b.dataset.tab).classList.add('active')});
+document.getElementById('formStock').onsubmit=e=>{e.preventDefault();let d=Object.fromEntries(new FormData(e.target));db.stock.push({id:Date.now(),nom:d.nom,categorie:d.categorie,quantite:+d.quantite,achat:+d.achat,vente:+d.vente});e.target.reset();save()};
+document.getElementById('formVente').onsubmit=e=>{e.preventDefault();let d=Object.fromEntries(new FormData(e.target)),p=db.stock.find(x=>x.id==d.produit),q=+d.quantite;if(!p||q<1||q>p.quantite){alert('Vérifiez le produit et la quantité disponible.');return}p.quantite-=q;db.ventes.push({date:new Date().toLocaleString('fr-FR'),nom:p.nom,quantite:q,client:d.client,total:q*p.vente,benefice:q*(p.vente-p.achat)});e.target.reset();save()};
+document.getElementById('formRep').onsubmit=e=>{e.preventDefault();db.reparations.push({...Object.fromEntries(new FormData(e.target)),date:new Date().toLocaleDateString('fr-FR')});e.target.reset();save()};
+document.getElementById('formClient').onsubmit=e=>{e.preventDefault();db.clients.push(Object.fromEntries(new FormData(e.target)));e.target.reset();save()};
+document.getElementById('formDep').onsubmit=e=>{e.preventDefault();db.depenses.push({...Object.fromEntries(new FormData(e.target)),montant:+e.target.montant.value,date:new Date().toLocaleDateString('fr-FR')});e.target.reset();save()};
+function del(type,i){if(confirm('Supprimer cet élément ?')){db[type].splice(i,1);save()}}
+function render(){
+document.getElementById('sProduits').textContent=db.stock.length;
+document.getElementById('sValeur').textContent=f(db.stock.reduce((s,p)=>s+p.quantite*p.achat,0));
+document.getElementById('sVentes').textContent=f(db.ventes.reduce((s,v)=>s+v.total,0));
+document.getElementById('sDepenses').textContent=f(db.depenses.reduce((s,d)=>s+d.montant,0));
+document.getElementById('listeStock').innerHTML=db.stock.length?db.stock.map((p,i)=>`<div class="item"><div><b>${safe(p.nom)}</b><small>${safe(p.categorie)} · Qté : ${p.quantite} · Achat ${f(p.achat)} · Vente ${f(p.vente)}</small></div><button class="danger" onclick="del('stock',${i})">Supprimer</button></div>`).join(''):'<p class="empty">Aucun produit enregistré.</p>';
+document.getElementById('choixProduit').innerHTML='<option value="">Choisir un produit</option>'+db.stock.filter(p=>p.quantite>0).map(p=>`<option value="${p.id}">${safe(p.nom)} — ${p.quantite} disponible(s)</option>`).join('');
+document.getElementById('listeVentes').innerHTML=db.ventes.length?[...db.ventes].reverse().map(v=>`<div class="item"><div><b>${safe(v.nom)} × ${v.quantite}</b><small>${safe(v.date)} · ${safe(v.client)}</small></div><b>${f(v.total)}</b></div>`).join(''):'<p class="empty">Aucune vente.</p>';
+document.getElementById('listeRep').innerHTML=db.reparations.length?db.reparations.map((r,i)=>`<div class="item"><div><b>${safe(r.telephone)} — ${safe(r.client)}</b><small>${safe(r.probleme)} · ${safe(r.etat)} · ${f(r.prix)}</small></div><select onchange="db.reparations[${i}].etat=this.value;save()"><option ${r.etat==='En attente'?'selected':''}>En attente</option><option ${r.etat==='En cours'?'selected':''}>En cours</option><option ${r.etat==='Terminée'?'selected':''}>Terminée</option><option ${r.etat==='Récupérée'?'selected':''}>Récupérée</option></select></div>`).join(''):'<p class="empty">Aucune réparation.</p>';
+document.getElementById('listeClients').innerHTML=db.clients.length?db.clients.map((c,i)=>`<div class="item"><div><b>${safe(c.nom)}</b><small>${safe(c.tel)} · ${safe(c.note)}</small></div><button class="danger" onclick="del('clients',${i})">Supprimer</button></div>`).join(''):'<p class="empty">Aucun client.</p>';
+document.getElementById('listeDep').innerHTML=db.depenses.length?db.depenses.map(d=>`<div class="item"><div><b>${safe(d.motif)}</b><small>${safe(d.date)}</small></div><b>${f(d.montant)}</b></div>`).join(''):'<p class="empty">Aucune dépense.</p>';
+document.getElementById('resume').innerHTML=`<p>Total des ventes : <b>${f(db.ventes.reduce((s,v)=>s+v.total,0))}</b></p><p>Bénéfice brut estimé des ventes : <b>${f(db.ventes.reduce((s,v)=>s+v.benefice,0))}</b></p><p>Total des dépenses : <b>${f(db.depenses.reduce((s,d)=>s+d.montant,0))}</b></p><p>Solde indicatif après dépenses : <b>${f(db.ventes.reduce((s,v)=>s+v.benefice,0)-db.depenses.reduce((s,d)=>s+d.montant,0))}</b></p>`;
 }
-function showDashboard(){
- document.getElementById("login").style.display="none";
- document.getElementById("dashboard").style.display="block";
+document.getElementById('exporter').onclick=()=>{let a=document.createElement('a'),u=URL.createObjectURL(new Blob([JSON.stringify(db,null,2)],{type:'application/json'}));a.href=u;a.download='sauvegarde-zoungrana-telecom.json';a.click();URL.revokeObjectURL(u)};
+document.getElementById('importer').onchange=async e=>{try{let x=JSON.parse(await e.target.files[0].text());if(!x.stock||!x.ventes)throw 0;db=x;save();alert('Sauvegarde restaurée.')}catch{alert('Fichier de sauvegarde invalide.')}};
+document.getElementById('effacerTout').onclick=()=>{if(confirm('Confirmer la suppression de toutes les données ?')){db={stock:[],ventes:[],reparations:[],clients:[],depenses:[]};save()}};
+render();
+</script>
+<script>
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+ window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
 }
-async function logout(){
- await db.auth.signOut();
- document.getElementById("dashboard").style.display="none";
- document.getElementById("login").style.display="block";
-}
-async function checkSession(){
- const {data}=await db.auth.getSession();
- if(data.session)showDashboard();
-}
-if(!SUPABASE_URL.startsWith("A_REMPLACER"))checkSession();
-</script>async function ouvrirStock(){
-  const {data,error}=await db.from("produits").select("*");
-  if(error){
-    alert("Erreur : "+error.message);
-    return;
-  }
-  if(!data.length){
-    alert("Le stock est vide. Aucun produit enregistré.");
-    return;
-  }
-  let texte="STOCK ZOUNGRANA TELECOM\n\n";
-  data.forEach(p=>{
-    texte+=p.nom+" | "+p.categorie+" | Quantité : "+p.quantite+" | Prix vente : "+p.prix_vente+" F\n";
-  });
-  alert(texte);
-}
-</body>
-</html>
+</script>
+</body></html>
